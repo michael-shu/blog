@@ -4,10 +4,10 @@ import Giscus from '@giscus/react';
 
 const BlogPost = ({title, date, contentHTML}: {title:string, date:string, contentHTML: string}) => {
   return (
-    <div className="mx-20 p-5">
+    <div className="mx-[7%] p-5 markdown">
       <h1>{title}</h1>
       Date: {date}
-      <div dangerouslySetInnerHTML={{ __html: contentHTML }} />
+      <div className="my-10" dangerouslySetInnerHTML={{ __html: contentHTML }} />
       <Giscus
       id="comments"
       repo="michael-shu/comments"

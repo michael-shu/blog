@@ -30,7 +30,7 @@ export default function navbar() {
   }
 
   return (
-    <nav className="mx-20">
+    <nav className="mx-[7%] mb-3">
       <div className="flex justify-between">
         <p className="text-2xl font-bold md:text-3xl">Michael's Blog</p>
         <button onClick={() => toggleDisplay()}>

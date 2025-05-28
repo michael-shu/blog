@@ -1,24 +1,91 @@
 @import "tailwindcss";
 
 .darkMode {
-    background-color: #1b1f23;
-    color:#9ecfff;
+  background-color: #1b1f23;
+  color: #cae5ff;
 }
 
 .lightMode {
-    background-color:#f0f4ff;
-    color:	#1f2a48;
+  background-color: #f0f4ff;
+  color: #1f2a48;
 }
 
 .darkMode .card:hover {
-    border: 2px white solid;
+  border: 2px white solid;
 }
 
 .lightMode .card:hover {
-    border: 2px black solid;
+  border: 2px black solid;
 }
 
 .shiki {
-    padding: 10px;
-    border-radius:5px;
+  padding: 10px;
+  border-radius: 0 0 5px 5px;
+}
+
+.markdown h1 {
+  @apply text-4xl font-bold;
+}
+
+.markdown h2 {
+  @apply text-3xl font-semibold;
+}
+
+.markdown h3 {
+  @apply text-2xl font-semibold;
+}
+
+.markdown h4 {
+  @apply text-xl font-medium;
+}
+
+.markdown h5 {
+  @apply text-lg font-medium;
+}
+
+.markdown h6 {
+  @apply text-base font-medium;
+}
+
+.markdown p, pre, li {
+  margin-bottom: 1.5em;
+  font-size:20px;
+}
+hr {
+    margin: 1.5em 0px 1.5em 0px;
+}
+
+.code-wrapper {
+  margin: 1rem 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.code-header {
+  display:flex;
+  background: #8d8dc6;
+  color: white;
+  font-size: 2rem;
+  padding: 0.5rem 1rem;
+  border-radius:10px 10px 0 0;
+
+  font-weight:bolder;
+  justify-content:space-between;
+}
+
+.line.diff.add {
+  background-color: #003c1b;
+  color: #b4f8c8;
+  position: relative;
+  display: block;        /* ensures full-width background */
+  width: 100%;           /* makes background extend fully */
+  box-sizing: border-box;
+}
+
+.line.diff.add::before {
+  content: '+';
+  position: absolute;
+  left: 0.3em;
+  color: #00ff87;
+  pointer-events: none;
 }
