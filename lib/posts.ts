@@ -7,6 +7,8 @@ import rehypeShiki from "@shikijs/rehype";
 import rehypeStringify from "rehype-stringify";
 import remarkParse from "remark-parse";
 import { unified } from "unified";
+import rehypeExternalLinks from 'rehype-external-links';
+
 
 import {transformerNotationDiff} from '@shikijs/transformers'
 
@@ -66,6 +68,10 @@ export async function getPostBySlug(slug: string): Promise<{
         }), 
       ],
     })
+    .use(rehypeExternalLinks, {
+      target: '_blank',
+      rel: ['noopener', 'noreferrer'],
+    })
     .use(rehypeStringify)
     .process(content);
 
@@ -84,25 +90,60 @@ export async function getPostBySlug(slug: string): Promise<{
 
 function addCodeBars(content: string): string {
   const $ = cheerio.load(content);
-  console.log("This is add Code Bars");
-  $("pre > code").each(function (i, element) {
-    const header_span = $(element).find("span").first();
+
+  // Apply .code class to inline <code> blocks (not inside <pre>)
+  $("code").each(function () {
+    const isInsidePre = $(this).parents("pre").length > 0;
+    if (!isInsidePre) {
+      $(this).addClass("code");
+    }
+  });
+
+  // Enhance <pre><code> blocks that start with a filename (e.g., .ts)
+  $("pre > code").each(function () {
+    const header_span = $(this).find("span").first();
 
     if (header_span.text().includes(".ts")) {
+      // Safely encode the rest of the code for clipboard
       let code_text = "";
-      $(element).children().slice(1).each((i, element) => {
-        code_text += htmlEncode($(element).text()) + "&#10;";
-      });
+      $(this)
+        .children()
+        .slice(1)
+        .each((_, element) => {
+          code_text += $(element).text() + "\n";
+        });
 
-      const pre = header_span.closest('pre');
+      // Escape for JS string usage
+      const safeCodeText = code_text
+        .replace(/\\/g, "\\\\")
+        .replace(/`/g, "\\`")
+        .replace(/\$/g, "\\$");
 
-      $(`<div class="code-header">${header_span.text()}<button onClick=navigator.clipboard.writeText(\`${code_text}\`)><svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M280 64l40 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 128C0 92.7 28.7 64 64 64l40 0 9.6 0C121 27.5 153.3 0 192 0s71 27.5 78.4 64l9.6 0zM64 112c-8.8 0-16 7.2-16 16l0 320c0 8.8 7.2 16 16 16l256 0c8.8 0 16-7.2 16-16l0-320c0-8.8-7.2-16-16-16l-16 0 0 24c0 13.3-10.7 24-24 24l-88 0-88 0c-13.3 0-24-10.7-24-24l0-24-16 0zm128-8a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/></svg></button></div>`)
-      .insertBefore(pre);
+      const pre = header_span.closest("pre");
+      pre.addClass("code");
+
+      const headerHtml = `
+        <div class="code-header">
+          ${header_span.text()}
+          <button onClick="navigator.clipboard.writeText(\`${safeCodeText}\`)">
+            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+              <path d="M280 64l40 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 128C0 92.7 28.7 64 64 64l40 0 9.6 0C121 27.5 153.3 0 192 0s71 27.5 78.4 64l9.6 0zM64 112c-8.8 0-16 7.2-16 16l0 320c0 8.8 7.2 16 16 16l256 0c8.8 0 16-7.2 16-16l0-320c0-8.8-7.2-16-16-16l-16 0 0 24c0 13.3-10.7 24-24 24l-88 0-88 0c-13.3 0-24-10.7-24-24l0-24-16 0zm128-8a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/>
+            </svg>
+          </button>
+        </div>
+      `;
+
+      const headerNode = $.parseHTML(headerHtml);
+      pre.before(headerNode);
+
       header_span.remove();
     }
   });
-  return $.html();
+
+  // Avoid cheerio wrapping output in <html><body>
+  return $("body").children().toArray().map(el => $.html(el)).join("");
 }
+
 
 function htmlEncode(input: string) {
   return input.replace(/ /g, '&#32;')   // Replace space with HTML entity

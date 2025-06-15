@@ -20,13 +20,13 @@ export default function RootLayout({
             __html: `
               (function () {
                 try {
-                  const theme = localStorage.getItem('theme');
+                  const theme = localStorage.getItem('data-theme');
                   console.log("This is theme in localStorage", theme);
-                  if (theme === 'darkMode' || theme === 'lightMode') {
+                  if (theme === 'dark' || theme === 'light') {
                     document.documentElement.className = theme;
                   } else {
-                    document.documentElement.className = 'darkMode';
-                    localStorage.setItem('darkMode');
+                    document.documentElement.className = 'dark';
+                    localStorage.setItem('dark');
                   }
                 } catch (e) {}
               })();
