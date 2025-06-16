@@ -75,14 +75,14 @@ export async function getPostBySlug(slug: string): Promise<{
     .use(rehypeStringify)
     .process(content);
 
-  //console.log("This is processedContent", processedContent);
   const stringHTML = processedContent.value.toString();
 
-  const contentHtml = addCodeBars(stringHTML);
+  // Apply enhancements
+  const withCodeBars = addCodeBars(stringHTML);
+  const withLazyImages = addLazyLoadingToImages(withCodeBars);
 
-  //console.log("This is contentHTML", contentHtml);
   return {
-    contentHtml,
+    contentHtml: withLazyImages,
     title: data.title,
     date: data.date,
   };
@@ -144,6 +144,17 @@ function addCodeBars(content: string): string {
   return $("body").children().toArray().map(el => $.html(el)).join("");
 }
 
+function addLazyLoadingToImages(content: string): string {
+  const $ = cheerio.load(content);
+
+  // Find all <img> tags and add 'loading="lazy"'
+  $("img").each(function () {
+    $(this).attr("loading", "lazy");
+  });
+
+  // Return the updated HTML content
+  return $("body").children().toArray().map(el => $.html(el)).join("");
+}
 
 function htmlEncode(input: string) {
   return input.replace(/ /g, '&#32;')   // Replace space with HTML entity

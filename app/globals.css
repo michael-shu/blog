@@ -58,9 +58,6 @@
   margin-bottom: 1.5em;
   font-size:20px;
 }
-p, li {
-  margin-top:1.5em;
-}
 
 ul, li {
   @apply list-disc ml-6;
