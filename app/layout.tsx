@@ -15,24 +15,21 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function () {
-                try {
-                  const theme = localStorage.getItem('data-theme');
-                  console.log("This is theme in localStorage", theme);
-                  if (theme === 'dark' || theme === 'light') {
-                    document.documentElement.className = theme;
-                  } else {
-                    document.documentElement.className = 'dark';
-                    localStorage.setItem('dark');
-                  }
-                } catch (e) {}
-              })();
-            `,
-          }}
-        />
+      <script>
+          {`
+            (function () {
+              try {
+                const theme = localStorage.getItem('data-theme');
+                if (theme === 'dark' || theme === 'light') {
+                  document.documentElement.className = theme;
+                } else {
+                  document.documentElement.className = 'dark';
+                  localStorage.setItem('data-theme', 'dark');
+                }
+              } catch (e) {}
+            })();
+          `}
+        </script>
       </head>
       <body>
         <Navbar />

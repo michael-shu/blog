@@ -33,8 +33,16 @@ export default function Home() {
               <a href="/all" className="hover:underline hover:text-white">All Posts</a>
             </div>
             <div className="grid lg:grid-cols-3 sm:grid-cols-1 md:grid-cols-2 gap-6 w-full">
-            <Card post_slug="barrel-files" date="02/07/2025" title="Barrel Files" length="5 min"/>
-            <Card post_slug="test-files" date="02/07/2025" title="Testing" length="5 min"/>
+              {posts.map((post) => (
+                <Card
+                  key={post.slug}
+                  post_slug={post.slug}
+                  date={post.date}
+                  title={post.title}
+                  length={post.length}
+                  image={post.image}
+                />
+              ))}
             </div>
         </section>
       </main>

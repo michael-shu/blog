@@ -63,7 +63,7 @@ export default function navbar() {
   return (
     <nav className="mx-[7%] mb-3">
       <div className="flex justify-between">
-        <p className="text-2xl font-bold md:text-3xl">Michael's Blog</p>
+        <p className="text-2xl font-bold md:text-3xl"><a href="/">Michael's Blog</a></p>
         <button onClick={() => toggleDisplay()}>
           <div id="displayIcon">
             {theme === "dark" ? (
@@ -94,7 +94,7 @@ export default function navbar() {
       </div>
       <div className="flex justify-between">
         <div className="flex gap-2">
-          <a href="/all">Blog</a>
+          <a href="/all">All Posts</a>
           <a href="/tags">Tags</a>
         </div>
         <div className="flex gap-2">

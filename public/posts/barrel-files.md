@@ -3,6 +3,7 @@ title: "Barrel Files"
 date: "05/07/2025"
 slug: "barrel-files"
 length: "5 min"
+image: "barrel-files/barrel.webp"
 tags: "javascript, typescript, barrel"
 ---
 
