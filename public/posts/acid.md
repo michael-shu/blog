@@ -17,27 +17,29 @@ A transaction is a single unit of work in a database.
 
 Typically, these operations are CRUD in nature:
 
-Create – Insert new data into the database.
-Example: Adding a new user record when someone signs up.
+- Create – Insert new data into the database.
+Ex: Adding a new user record when someone signs up.
 
-Read – Retrieve existing data.
-Example: Fetching a customer’s order history.
+- Read – Retrieve existing data.
+Ex: Fetching a customer’s order history.
 
-Update – Modify existing data.
-Example: Changing a shipping address on an order before it’s shipped.
+- Update – Modify existing data.
+Ex: Changing a shipping address on an order before it’s shipped.
 
-Delete – Remove existing data.
-Example: Deleting an expired session token.
+- Delete – Remove existing data.
+Ex: Deleting an expired session token.
 
 In a transaction, these operations are grouped so they either:
 
-All succeed together (ACID approach), or
+1. All succeed together (ACID approach)
 
-May partially succeed with eventual correction (BASE approach).
+2. May partially succeed with eventual correction (BASE approach).
 
 The “unit of work” could be as small as a single INSERT or as big as several INSERT, UPDATE, and DELETE statements touching multiple tables. The key is that the database treats it as one logical action from start to finish.
 For example:
 Transferring money from your bank account to someone else’s—either the money leaves your account and appears in theirs, or the whole thing is rolled back.
+
+---
 
 ## 🔍 ACID — Reliability First
 ACID stands for Atomicity, Consistency, Isolation, Durability.
@@ -58,17 +60,22 @@ If one part succeeds but the other fails, you either lose money or create money 
 
 Data always follows the rules of the system.
 
-Example: Lets say the capacity of a venue is 600 people. So each time we sell a ticket, we have to check that the current number of tickets sold isn't above 600. This is an example of a rule determined by the system.
+Example: Lets say the capacity of a venue is 600 people. Each time a ticket is sold, we have to check that the current number of tickets sold isn't above 600. This is an example of a rule determined by the system.
 
-So, to monitor this we store the number of tickets sold in a dastabase. That number must be an integer. So if a transaction ever updated that number to be a float or double, that would violate the rule. The transaction would be terminated and the affected rows rolled back.
+To monitor this, the number of tickets sold is stored in a database. That number must be an integer. If a transaction ever updated that number to be a float or double, that would violate the rule. The transaction would be terminated and the affected rows rolled back.
 
 ### I – Isolation
 
 Transactions don’t interfere with each other while they’re running.
 
-Example: If two transactions are changing one persons bank balance, and they happen at the same time, you could end  up with a race condition. Lets say both transactions are set to subtract 50 from the balance.
+Example: If two transactions are changing one customers bank balance, and they happen at the same time, a race condition could happen. Lets say both transactions are set to subtract 50 from the balance.
 
-If the two aren't sequential, it can lead to a race condition where both write the same value to the balance, meaning only 50 is subtracted instead of 100. 
+Transaction A reads the balance as 100
+Transaction B reads the balance as 100
+Transaction A computes 100-50, writes 50 to bank balance
+Transaction B computes 100-50, writes 50 to bank balance
+
+End result, the bank balance is at 50 instead of at 0. Isolation is necessary to ensure A and B happen sequentially. 
 
 In ACID systems, isolation ensures a consistent view of the data by controlling how transactions overlap:
 
@@ -91,27 +98,31 @@ In this case, the go to option is to have a log of committed and non-committed t
 
 3. Media level - This level of system failure is defined as contents of non-volatile storage being lost. Either through corruption of files, physical damage(fire, water), or similar events. Durability onn this level is achieved by through a variety of backup/data loss prevention techniques such as having backups of databases in separate locations(cloud geo-redundancy) or point-in-time-recovery(PITR). 
 
+---
+
 ## 🔍 BASE — Availability First
 BASE stands for Basically Available, Soft state, Eventually consistent.
 It exchanges accuracy for high availability and scalability.
 
-### Basically Available
+### BA - Basically Available
  
 The system stays up and responsive, even if data isn’t perfectly up-to-date. 
 
 For example, an ecommerce website prioritizes taking in and procesing orders during high traffic, so exact inventory updates lag behind.
 
-### Soft State
+### S - Soft State
 
 Data can change over time, even without new input, while updates sync.
 
 Example: If you delete/edit an instagram post, people who have loaded it will still have it the original on their feed until the cache expires or the user refreshes the app. 
 
-### Eventually Consistent
+### E - Eventually Consistent
 
 The system guarantees consistency over time, not instantly.
 
 Example: Imagine a groupchat where some members have received a new message, but some haven't, typically due to connection issues. Over time, the system delivers the message to everyone, resolving these discrepancies so that all participants have a consistent view of the conversation.
+
+---
 
 ## 🧠 The CAP Theorem Connection
 In distributed databases, the CAP theorem says you can only have two out of three:
@@ -125,14 +136,16 @@ Partition Tolerance (system keeps running if nodes can’t talk to each other)
 Both ACID and BASE systems are partition tolerant (must be for distributed systems),
 so you’re basically choosing between Consistency (ACID) and Availability (BASE). 
 
+---
+
 ## 💡 When to Use Which
-- **Use ACID when:**
+**Use ACID when:**
 
 Accuracy is critical.
 
 Examples: financial transactions, stock trading, healthcare data.
 
-- **Use BASE when:**
+**Use BASE when:**
 
 Availability and speed matter more than perfect real-time accuracy.
 
