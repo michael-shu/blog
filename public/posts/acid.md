@@ -36,8 +36,7 @@ In a transaction, these operations are grouped so they either:
 2. May partially succeed with eventual correction (BASE approach).
 
 The “unit of work” could be as small as a single INSERT or as big as several INSERT, UPDATE, and DELETE statements touching multiple tables. The key is that the database treats it as one logical action from start to finish.
-For example:
-Transferring money from your bank account to someone else’s—either the money leaves your account and appears in theirs, or the whole thing is rolled back.
+For example, transferring money from your bank account to someone else’s—either the money leaves your account and appears in theirs, or the whole thing is rolled back.
 
 ---
 

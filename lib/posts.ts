@@ -52,7 +52,7 @@ export async function getPostBySlug(slug: string): Promise<{
   title: string;
   date: string;
 }> {
-  console.log("This is slug in getPostBySlug:", slug);
+  //console.log("This is slug in getPostBySlug:", slug);
   const fullPath = path.join(postsDirectory, `${slug}.md`);
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);

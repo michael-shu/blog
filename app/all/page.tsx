@@ -8,7 +8,7 @@ export default function BlogIndexPage() {
   return (
     <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
         {posts.map((post) => (
-          <Card key={post.slug} post_slug={post.slug} title={post.title} date={post.date} length={post.length} />
+          <Card key={post.slug} post_slug={post.slug} title={post.title} date={post.date} length={post.length} image={post.image} />
         ))}
     </section>
 
